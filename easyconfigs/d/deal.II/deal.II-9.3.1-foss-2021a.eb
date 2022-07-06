@@ -10,7 +10,10 @@ description = """A C++ software library supporting the creation of finite elemen
 toolchain = {'name': 'foss', 'version': '2021a'}
 toolchainopts = {'usempi': True, 'pic': True, 'strict': True}
 
-source_urls = ['https://dealii.kyomu.43-1.org/downloads/']
+source_urls = [
+    'https://dealii.kyomu.43-1.org/downloads/',
+    'https://github.com/dealii/dealii/releases/download/v%(version)s/'
+]
 sources = ['dealii-%(version)s.tar.gz']
 checksums = ['a62f4676ab2dc029892251d141427fb75cbb83cddd606019f615d0dde9c61ab8']
 
