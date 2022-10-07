@@ -1,0 +1,51 @@
+easyblock = 'CMakeMake'
+
+name = 'deal.II'
+
+# We want to use the latest code available in deal.II git master
+local_commit = 'eef19498cffc482a3ffb0931edf772d9d988f4f1'
+local_version = '9.5.0-pre'
+local_commit_date = '20221005'
+version = '%s_%s_%s' % (local_version, local_commit_date, local_commit[:7])
+
+homepage = 'http://www.dealii.org/'
+description = """A C++ software library supporting the creation of finite element codes and an open community of users
+ and developers."""
+
+toolchain = {'name': 'foss', 'version': '2021a'}
+toolchainopts = {'usempi': True, 'pic': True, 'strict': True}
+
+source_urls = ['https://github.com/dealii/dealii/archive/']
+sources = [{'download_filename': '%s.zip' % local_commit, 'filename': 'dealii-%(version)s.zip'}]
+checksums = ['646861ad0dfc20a22e713c89ea2f575d582b5bff9c73e8382c7fd239c9239b81']
+
+builddependencies = [
+    ('CMake', '3.20.1'),
+]
+
+dependencies = [
+    ('METIS', '5.1.0'),
+    ('occt', '7.5.0p1'),
+    ('p4est', '2.3.3'),
+    ('SUNDIALS', '5.8.0'),
+    ('Trilinos', '13.2.0'),
+    ('TXR', '273'),
+]
+
+configopts = '-DDEAL_II_WITH_MPI=ON '
+configopts += '-DDEAL_II_HAVE_USABLE_FLAGS_RELEASE=ON '
+configopts += '-DDEAL_II_WITH_METIS=ON -DMETIS_DIR=$EBROOTMETIS '
+configopts += '-DDEAL_II_WITH_OPENCASCADE=ON -DOPENCASCADE_DIR=$EBROOTOCCT '
+configopts += '-DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=$EBROOTP4EST '
+configopts += '-DDEAL_II_WITH_SCALAPACK=ON -DSCALAPACK_DIR=$EBROOTSCALAPACK -DSCALAPACK_LIBRARIES="$LIBSCALAPACK -lm" '
+configopts += '-DDEAL_II_WITH_SUNDIALS=ON -DSUNDIALS_DIR=$EBROOTSUNDIALS '
+configopts += '-DDEAL_II_WITH_TRILINOS=ON -DTRILINOS_DIR=$EBROOTTRILINOS '
+
+runtest = 'test'
+
+sanity_check_paths = {
+    'files': [('lib/libdeal_II.so')],
+    'dirs': ['include', 'lib'],
+}
+
+moduleclass = 'numlib'
