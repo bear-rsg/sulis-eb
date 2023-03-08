@@ -1,29 +1,44 @@
 #!/bin/bash
-# Source this file to enter the easybuild live or test environment.
+# Source this file to enter the easybuild Aston or Birmingham live environments or a test environment.
 
-env='test'
+aston=false
+birmingham=false
+
 while [[ -n $1 ]]; do
     case $1 in
-    --live)
-        env='live'
+    --aston)
+        aston=true
         ;;
+        --birmingham)
+            birmingham=true
+            ;;
     esac
     shift
 done
 
-module load EasyBuild
-
-repo=${HOME}/easybuild/sulis-eb
-
-if [[ "X${env}" == "Xlive" ]]; then
-	appbase=/sulis/institutions/birmingham
-else
-	appbase=${HOME}/easybuild/install
+if [[ "${aston}" == true ]] && [[ "${birmingham}" == true ]]; then
+    echo "You cannot live build for Aston and Birmingham at the same time"
+    return 1
 fi
 
-export EASYBUILD_INSTALLPATH=${appbase}
-module use "${appbase}"/modules/all
-module use "${appbase}"/modules/
+module load EasyBuild
+
+repo="${HOME}/easybuild/sulis-eb"
+
+if [[ "${aston}" == true ]]; then
+    appbase=/sulis/institutions/aston
+    echo -e "Loading easybuild \033[1;33mAston live\033[0m environment"
+elif [[ "${birmingham}" == true ]]; then
+    appbase=/sulis/institutions/birmingham
+    echo -e "Loading easybuild \033[1;33mBirmingham live\033[0m environment"
+else
+    appbase=${HOME}/easybuild/install
+    echo -e "Loading easybuild \033[1;33mtest\033[0m environment"
+fi
+
+export EASYBUILD_INSTALLPATH="${appbase}"
+module use "${appbase}/modules/all"
+module use "${appbase}/modules/"
 export EASYBUILD_ACCEPT_EULA_FOR=Intel-oneAPI,NVHPC
 export EASYBUILD_SOURCEPATH=${HOME}/easybuild/sources
 export EASYBUILD_BUILDPATH=/dev/shm/${USER}/build
@@ -33,7 +48,6 @@ unset LD_RUN_PATH
 unset C_INCLUDE_PATH
 unset CPLUS_INCLUDE_PATH
 
-echo -e "Loading easybuild \033[1;33m${env}\033[0m environment"
 echo "Using installation location ${appbase}"
 
 # add custom easyconfigs to the search path - the trailing : prepends the search path for easyconfigs
@@ -44,4 +58,3 @@ export EASYBUILD_INCLUDE_EASYBLOCKS=${repo}/easyblocks/\*.py,${repo}/easyblocks/
 
 # a100 - 8.0 (https://en.wikipedia.org/wiki/CUDA#GPUs_supported)
 export EASYBUILD_CUDA_COMPUTE_CAPABILITIES="8.0"
-
