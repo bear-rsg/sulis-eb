@@ -2,28 +2,40 @@
 # Source this file to enter the easybuild live or test environment.
 
 env='test'
+appbase=${HOME}/easybuild/install
+aston=false
+birmingham=false
+
 while [[ -n $1 ]]; do
     case $1 in
-    --live)
-        env='live'
-        ;;
+        --live)
+            env='live'
+            ;;
+        --aston)
+            aston=true
+            ;;
+        --birmingham)
+            birmingham=true
+            ;;
     esac
     shift
 done
 
-module load EasyBuild
-
-repo=${HOME}/easybuild/sulis-eb
-
 if [[ "X${env}" == "Xlive" ]]; then
-	appbase=/sulis/institutions/birmingham
-else
-	appbase=${HOME}/easybuild/install
+    if [[ "${aston}" == true ]]; then
+        appbase=/sulis/institutions/aston
+    elif [[ "${birmingham}" == true ]]; then
+        appbase=/sulis/institutions/birmingham
+    fi
 fi
 
-export EASYBUILD_INSTALLPATH=${appbase}
-module use "${appbase}"/modules/all
-module use "${appbase}"/modules/
+module load EasyBuild
+
+repo="${HOME}/easybuild/sulis-eb"
+
+export EASYBUILD_INSTALLPATH="${appbase}"
+module use "${appbase}/modules/all"
+module use "${appbase}/modules/"
 export EASYBUILD_ACCEPT_EULA_FOR=Intel-oneAPI,NVHPC
 export EASYBUILD_SOURCEPATH=${HOME}/easybuild/sources
 export EASYBUILD_BUILDPATH=/dev/shm/${USER}/build
@@ -44,4 +56,3 @@ export EASYBUILD_INCLUDE_EASYBLOCKS=${repo}/easyblocks/\*.py,${repo}/easyblocks/
 
 # a100 - 8.0 (https://en.wikipedia.org/wiki/CUDA#GPUs_supported)
 export EASYBUILD_CUDA_COMPUTE_CAPABILITIES="8.0"
-
