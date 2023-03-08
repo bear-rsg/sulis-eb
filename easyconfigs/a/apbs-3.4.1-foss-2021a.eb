@@ -70,7 +70,8 @@ configopts += '-DBUILD_DOC=OFF '
 configopts += '-DENABLE_PYTHON=OFF '  # disable this for now. Unable to build & link _apbslib.so
 
 pretestopts = prebuildopts
-pretestopts += "export PATH=%(installdir)s/bin:$PATH && "
+pretestopts += "chmod +x %(builddir)s/%(name)s-%(version)s/build/temp/NanoShaper && "
+pretestopts += "export PATH=%(builddir)s/%(name)s-%(version)s/build/temp:%(installdir)s/bin:$PATH && "
 
 runtest = 'test'
 
