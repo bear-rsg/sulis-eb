@@ -6,9 +6,9 @@ birmingham=false
 
 while [[ -n $1 ]]; do
     case $1 in
-        --aston)
-            aston=true
-            ;;
+    --aston)
+        aston=true
+        ;;
         --birmingham)
             birmingham=true
             ;;
@@ -27,13 +27,13 @@ repo="${HOME}/easybuild/sulis-eb"
 
 if [[ "${aston}" == true ]]; then
     appbase=/sulis/institutions/aston
-	echo -e "Loading easybuild \033[1;33mAston live\033[0m environment"
+    echo -e "Loading easybuild \033[1;33mAston live\033[0m environment"
 elif [[ "${birmingham}" == true ]]; then
     appbase=/sulis/institutions/birmingham
-	echo -e "Loading easybuild \033[1;33mBirmingham live\033[0m environment"
+    echo -e "Loading easybuild \033[1;33mBirmingham live\033[0m environment"
 else
     appbase=${HOME}/easybuild/install
-	echo -e "Loading easybuild \033[1;33mtest\033[0m environment"
+    echo -e "Loading easybuild \033[1;33mtest\033[0m environment"
 fi
 
 export EASYBUILD_INSTALLPATH="${appbase}"
