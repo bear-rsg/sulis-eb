@@ -1,0 +1,92 @@
+easyblock = 'CMakeMake'
+
+name = 'apbs'
+version = '3.4.1'
+
+homepage = 'http://www.poissonboltzmann.org/'
+description = """APBS (Adaptive Poisson-Boltzmann Solver) solves the equations of continuum electrostatics
+ for large biomolecular assemblages. This software was designed “from the ground up” using modern design
+ principles to ensure its ability to interface with other computational packages and evolve as methods and
+ applications change over time. The APBS code is accompanied by extensive documentation for both users and
+ programmers and is supported by a variety of utilities for preparing calculations and analyzing results.
+ Finally, the free, open-source APBS license ensures its accessibility to the entire biomedical community."""
+
+citing = """Jurrus E, Engel D, Star K, Monson K, Brandi J, Felberg LE, Brookes DH, Wilson L, Chen J, Liles K,
+ Chun M, Li P, Gohara DW, Dolinsky T, Konecny R, Koes DR, Nielsen JE, Head-Gordon T, Geng W, Krasny R, Wei G-W,
+ Holst MJ, McCammon JA, Baker NA. Improvements to the APBS biomolecular solvation software suite.
+ Protein Sci, 27 (1), 112-128, 2018. DOI:10.1002/pro.3280"""
+
+toolchain = {'name': 'foss', 'version': '2021a'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/Electrostatics/apbs/archive/refs/tags/']
+sources = ['v%(version)s.tar.gz']
+checksums = ['644e6246fd37c9dd4172fc7be1763337082ab8584dbcd53e738c831b62c89bb2']
+
+builddependencies = [
+    ('CMake', '3.20.1'),
+    ('SWIG', '4.0.2'),  # enables APBS python wrapper
+    ('Eigen', '3.3.9'),
+]
+
+dependencies = [
+    ('Boost', '1.76.0'),
+    ('libiconv', '1.16'),
+    ('SuiteSparse', '5.10.1', '-METIS-5.1.0'),
+    ('libtirpc', '1.3.2'),
+    ('SciPy-bundle', '2021.05'),
+    ('Python', '3.9.5'),
+    ('pybind11', '2.6.2'),
+    ('pdb2pqr', '3.5.2'),
+]
+
+# We build in build/, see https://apbs.readthedocs.io/en/latest/getting/source.html
+separate_build_dir = False
+srcdir = '..'
+preconfigopts = 'mkdir build && cd build && '
+
+# libtirpc needed
+preconfigopts += "sed -i 's/    mc/    mc maloc tirpc/g' ../cmake/ImportFETK.cmake &&"
+
+prebuildopts = 'cd build &&'
+preinstallopts = prebuildopts
+
+configopts = '-DCMAKE_BUILD_TYPE=Release '
+configopts += '-DENABLE_QUIET=OFF '
+configopts += '-DENABLE_OPENMP=ON '
+configopts += '-DENABLE_TESTS=ON '
+configopts += '-DBUILD_TOOLS=ON '
+configopts += '-DBUILD_SHARED_LIBS=ON '
+configopts += '-DAPBS_STATIC_BUILD=OFF '
+configopts += '-DENABLE_GEOFLOW=ON '
+configopts += '-DENABLE_BEM=ON '
+configopts += '-DGET_NanoShaper=ON '
+configopts += '-DFETK_VERSION=1.9.3 '
+configopts += '-DPYTHON_VERSION=3.9 '
+configopts += '-DENABLE_iAPBS=ON '
+configopts += '-DENABLE_PBAM=OFF '
+configopts += '-DENABLE_PBSAM=OFF '
+configopts += '-DENABLE_PYGBE=OFF '
+configopts += '-DBUILD_DOC=OFF '
+configopts += '-DENABLE_PYTHON=OFF '  # enables tools/python wrappers
+# configopts += '-DPYBIND11_PYTHON_VERSION=%(pyshortver)s ' # needed for tools/python
+
+# pretestopts += "sed -e '/^\[bem.*\]/ s/^/#/' ../tests/test_cases.cfg &&"
+# pretestopts += "sed '/^\[bem\]$/,+2d; /^\[bem-pKa\]$/,+4d; /^\[bem-binding-energy\]$/,+3d' ./tests/test_cases.cfg &&"
+
+modextrapaths = {
+    'PATH': 'share/apbs/tools/bin', 'share/apbs/tools/tests'
+    'PYTHONPATH': 'lib'
+}
+
+sanity_check_paths = {
+    'files': [
+        ['bin/%s' % x for x in ['apbs', 'GeometricFlow', 'GeometricFlowWrap', 'NanoShaper', 'tabipb']],
+    ],
+    'dirs': ['include/fem/', 'share/apbs/examples']
+}
+
+# --help and --version produce non-zero exit codes.
+sanity_check_commands = ["apbs --version | grep 'Version APBS'"]
+
+moduleclass = 'bio'
