@@ -1,0 +1,49 @@
+# easyconfig originally written by Thomas Hoffmann,
+# EMBL Heidelberg, structures-it@embl.de, 2021/04
+easyblock = 'PythonBundle'
+
+name = 'pdb2pqr'
+version = '3.5.2'
+
+homepage = 'https://www.poissonboltzmann.org/'
+description = """Automates many of the common tasks of preparing structures for continuum
+ solvation calculations as well as many other types of biomolecular structure modeling,
+ analysis, and simulation."""
+
+toolchain = {'name': 'foss', 'version': '2021a'}
+toolchainopts = {}
+
+dependencies = [
+    ('Python', '3.9.5'),
+    ('SciPy-bundle', '2021.05'),
+]
+
+use_pip = True
+exts_list = [
+    ('propka', '3.5.0', {
+        'souces': ['%(name)s-%(version)s.tar.gz'],
+        'checksums': ['0f32bbcafed56e94cc9d3fdb05d9c2faa7485d8a5779aaa79049b9ce0ab052fa'],
+    }),
+    ('mmcif-pdbx', '2.0.1', {
+        'modulename': 'pdbx',
+        'sources': ['%(name)s-%(version)s.tar.gz'],
+        'checksums': ['a1f20cf35f92916160ae066f510cce9a0c21a630d064dafce545ba0cf47c9280'],
+    }),
+    (name, version, {
+        'souces': ['%(name)s-%(version)s.tar.gz'],
+        'checksums': ['9d145ff3797a563ce818f9d2488413ac339f66c58230670c2455b2572cccd957'],
+    }),
+]
+
+fix_python_shebang_for = ['bin/%s' % x for x in ['pdb2pqr', 'inputgen', 'dx2cube']]
+postinstallcmds = [
+    'cd %(installdir)s/bin && ln -s pdb2pqr30 pdb2pqr;'
+    'for i in pdb2pqr inputgen dx2cube; do ln -s $i ${i}.py;done'  # compat. pymol apbs_tools plugin
+]
+sanity_pip_check = True
+sanity_check_paths = {
+    'files': ['bin/%s' % x for x in ['pdb2pqr', 'pdb2pqr30', 'inputgen', 'dx2cube']],
+    'dirs': ["lib"]
+}
+
+moduleclass = 'chem'
