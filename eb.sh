@@ -1,16 +1,11 @@
 #!/bin/bash
-# Source this file to enter the easybuild live or test environment.
+# Source this file to enter the easybuild Aston or Birmingham live environments or a test environment.
 
-env='test'
-appbase=${HOME}/easybuild/install
 aston=false
 birmingham=false
 
 while [[ -n $1 ]]; do
     case $1 in
-        --live)
-            env='live'
-            ;;
         --aston)
             aston=true
             ;;
@@ -21,16 +16,24 @@ while [[ -n $1 ]]; do
     shift
 done
 
+if [[ "${aston}" == true ]] && [[ "${birmingham}" == true ]]; then
+    echo "You cannot live build for Aston and Birmingham at the same time"
+    return 1
+fi
+
 module load EasyBuild
 
 repo="${HOME}/easybuild/sulis-eb"
 
-if [[ "X${env}" == "Xlive" ]]; then
-    if [[ "${aston}" == true ]]; then
-        appbase=/sulis/institutions/aston
-    elif [[ "${birmingham}" == true ]]; then
-        appbase=/sulis/institutions/birmingham
-    fi
+if [[ "${aston}" == true ]]; then
+    appbase=/sulis/institutions/aston
+	echo -e "Loading easybuild \033[1;33mAston live\033[0m environment"
+elif [[ "${birmingham}" == true ]]; then
+    appbase=/sulis/institutions/birmingham
+	echo -e "Loading easybuild \033[1;33mBirmingham live\033[0m environment"
+else
+    appbase=${HOME}/easybuild/install
+	echo -e "Loading easybuild \033[1;33mtest\033[0m environment"
 fi
 
 export EASYBUILD_INSTALLPATH="${appbase}"
@@ -45,7 +48,6 @@ unset LD_RUN_PATH
 unset C_INCLUDE_PATH
 unset CPLUS_INCLUDE_PATH
 
-echo -e "Loading easybuild \033[1;33m${env}\033[0m environment"
 echo "Using installation location ${appbase}"
 
 # add custom easyconfigs to the search path - the trailing : prepends the search path for easyconfigs
