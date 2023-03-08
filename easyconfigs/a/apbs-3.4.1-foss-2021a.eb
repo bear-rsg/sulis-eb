@@ -25,7 +25,6 @@ checksums = ['644e6246fd37c9dd4172fc7be1763337082ab8584dbcd53e738c831b62c89bb2']
 
 builddependencies = [
     ('CMake', '3.20.1'),
-    ('SWIG', '4.0.2'),  # enables APBS python wrapper
     ('Eigen', '3.3.9'),
 ]
 
@@ -46,9 +45,9 @@ srcdir = '..'
 preconfigopts = 'mkdir build && cd build && '
 
 # libtirpc needed
-preconfigopts += "sed -i 's/    mc/    mc maloc tirpc/g' ../cmake/ImportFETK.cmake &&"
+preconfigopts += "sed -i 's/    mc/    mc maloc tirpc/g' ../cmake/ImportFETK.cmake && "
 
-prebuildopts = 'cd build &&'
+prebuildopts = 'cd build && '
 preinstallopts = prebuildopts
 
 configopts = '-DCMAKE_BUILD_TYPE=Release '
@@ -68,15 +67,16 @@ configopts += '-DENABLE_PBAM=OFF '
 configopts += '-DENABLE_PBSAM=OFF '
 configopts += '-DENABLE_PYGBE=OFF '
 configopts += '-DBUILD_DOC=OFF '
-configopts += '-DENABLE_PYTHON=OFF '  # enables tools/python wrappers
-# configopts += '-DPYBIND11_PYTHON_VERSION=%(pyshortver)s ' # needed for tools/python
+configopts += '-DENABLE_PYTHON=OFF '  # disable this for now. Unable to build & link _apbslib.so
 
-# pretestopts += "sed -e '/^\[bem.*\]/ s/^/#/' ../tests/test_cases.cfg &&"
-# pretestopts += "sed '/^\[bem\]$/,+2d; /^\[bem-pKa\]$/,+4d; /^\[bem-binding-energy\]$/,+3d' ./tests/test_cases.cfg &&"
+pretestopts = prebuildopts
+pretestopts += "export PATH=%(installdir)s/bin:$PATH && "
+
+runtest = 'test'
 
 modextrapaths = {
-    'PATH': 'share/apbs/tools/bin', 'share/apbs/tools/tests'
-    'PYTHONPATH': 'lib'
+    'PATH': 'share/apbs/tools/bin',
+    'PYTHONPATH': 'lib',
 }
 
 sanity_check_paths = {
