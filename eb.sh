@@ -21,6 +21,10 @@ while [[ -n $1 ]]; do
     shift
 done
 
+module load EasyBuild
+
+repo="${HOME}/easybuild/sulis-eb"
+
 if [[ "X${env}" == "Xlive" ]]; then
     if [[ "${aston}" == true ]]; then
         appbase=/sulis/institutions/aston
@@ -28,10 +32,6 @@ if [[ "X${env}" == "Xlive" ]]; then
         appbase=/sulis/institutions/birmingham
     fi
 fi
-
-module load EasyBuild
-
-repo="${HOME}/easybuild/sulis-eb"
 
 export EASYBUILD_INSTALLPATH="${appbase}"
 module use "${appbase}/modules/all"
