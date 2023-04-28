@@ -1,0 +1,36 @@
+easyblock = 'CMakeMake'
+
+name = 'LIGGGHTS'
+version = '20230424'
+_hash = 'bbd23c8'
+
+homepage = 'https://github.com/CFDEMproject/LIGGGHTS-PUBLIC'
+description = """LIGGGHTS® is an Open Source Discrete Element Method Particle Simulation Software.
+It can be used for the simulation of particulate materials, and aims to for applications it to industrial 
+problems LIGGGHTS® is currently used by a variety of research institutions and companies world-wide."""
+
+toolchain = {'name': 'foss', 'version': '2021a'}
+
+source_urls = ['https://github.com/CFDEMproject/LIGGGHTS-PUBLIC/archive/']
+sources = ['%s.tar.gz' % _hash]
+checksums = ['4e681adde7d80c173b95093fa90c4930ae151c2f7794a81a4f3859ea700beaa9']
+
+builddependencies = [
+    ('CMake', '3.20.1'),
+]
+
+dependencies = [
+    ('VTK', '9.0.1'),
+    ('libpng', '1.6.37'),
+    ('libjpeg-turbo', '2.0.6'),
+]
+
+start_dir = 'src'
+configopts = '-DVTK_DIR=$EBROOTVTK -DENABLE_PNG=ON -DENABLE_JPEG=ON -DENABLE_ALL=ON'
+
+sanity_check_paths = {
+    'files': ["bin/liggghts", "lib/libliggghts.%s" % SHLIB_EXT],
+    'dirs': []
+}
+
+moduleclass = 'chem'
