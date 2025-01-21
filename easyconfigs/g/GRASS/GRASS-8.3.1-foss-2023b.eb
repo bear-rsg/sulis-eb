@@ -1,0 +1,118 @@
+easyblock = 'ConfigureMake'
+
+name = 'GRASS'
+version = '8.3.1'
+
+homepage = "https://grass.osgeo.org"
+description = """The Geographic Resources Analysis Support System - used
+ for geospatial data management and analysis, image processing,
+ graphics and maps production, spatial modeling, and visualization"""
+
+toolchain = {'name': 'foss', 'version': '2023b'}
+
+source_urls = ['https://grass.osgeo.org/grass%s/source' % ''.join(version.split('.')[:2])]
+sources = [SOURCELOWER_TAR_GZ]
+patches = [
+ {'name': '%(name)s-%(version)s-clibs.patch', 'level': 0}
+]
+checksums = [
+    {'grass-8.3.1.tar.gz': 'ed8d448c4d6c74a280cc9db2af2d5098'},
+    {'GRASS-8.3.1-clibs.patch': '6eb5099cd5fdb0a445d11d65f36b74d7'},
+]
+
+builddependencies = [
+    ('flex', '2.6.4'),
+    ('Bison', '3.8.2'),
+    ('Autotools', '20220317'),
+]
+
+dependencies = [
+    ('netCDF', '4.9.2'),
+    ('Python', '3.11.5'),
+    ('GEOS', '3.12.1'),
+    ('zlib', '1.2.13'),
+    ('bzip2', '1.0.8'),
+    ('gettext', '0.22'),
+    ('libxml2', '2.11.5'),
+    ('libpng', '1.6.40'),
+    ('libreadline', '8.2'),
+    ('ncurses', '6.4'),
+    ('libspatialite', '5.0.1'),
+    ('PROJ', '9.3.1'),
+    ('SQLite', '3.43.1'),
+    ('freetype', '2.13.2'),
+    ('LibTIFF', '4.6.0'),
+    ('cairo', '1.18.0'),
+    ('X11', '20231019'),
+    ('Mesa', '23.1.9'),
+    ('libGLU', '9.0.3'),
+    ('wxPython', '4.2.1'),
+    ('zstd', '1.5.5'),
+    ('GDAL', '3.9.0'),
+    ('PDAL', '2.7.2'),
+]
+
+exts_list = [
+    ('pdal', '3.4.5', {
+        'source_urls': ['https://pypi.python.org/packages/source/p/pdal/'],
+        'checksums': ['828469b0ecf0079bbe71de94fc8dbd1b'],
+    }),
+]
+
+preconfigopts = "sed -e 's/-lblas/$LIBBLAS/g' -e 's/-llapack/$LIBLAPACK -lm/g' -i configure && "
+
+# not recognised options
+#--with-png, --with-png-libs, --with-png-includes, --with-wxwidgets
+# configopts += '--with-png '
+# configopts += '--with-png-libs="$EBROOTLIBPNG/lib $EBROOTZLIB/lib" --with-png-includes=$EBROOTLIBPNG/include '
+# configopts += '--with-wxwidgets=$EBROOTWXWIDGET/bin/wx-config '
+
+# changed to  --with-libpng=path/libpng-config
+#                          enable PNG support (libpng-config with path,
+#                          e.g. '--with-libpng=/usr/local/bin/libpng-config')
+
+
+configopts = '--enable-largefile=yes '
+configopts += '--with-cairo=yes '
+configopts += '--with-cxx '
+configopts += '--with-fftw --with-fftw-libs=$EBROOTFFTW/lib --with-fftw-includes=$EBROOTFFTW/include '
+configopts += '--with-freetype '
+configopts += '--with-freetype-libs=$EBROOTFREETYPE/lib --with-freetype-includes=$EBROOTFREETYPE/include '
+configopts += '--with-geos=$EBROOTGEOS/bin/geos-config '
+configopts += '--with-lapack '
+configopts += '--with-lapack-libs=$LAPACK_LIB_DIR '
+configopts += '--with-lapack-includes=$LAPACK_INC_DIR '
+configopts += '--with-blas '
+configopts += '--with-blas-libs=$BLAS_LIB_DIR '
+configopts += '--with-blas-includes=$BLAS_INC_DIR '
+configopts += '--with-netcdf=$EBROOTNETCDF/bin/nc-config '
+configopts += '--without-odbc '
+configopts += '--with-opengl '
+configopts += '--with-openmp '
+configopts += '--without-postgres '
+configopts += '--with-proj-libs=$EBROOTPROJ/lib '
+configopts += '--with-proj-includes=$EBROOTPROJ/include --with-proj-share=$EBROOTPROJ/share/proj '
+configopts += '--with-pthread '
+configopts += '--with-readline '
+configopts += '--with-readline-libs=$EBROOTLIBREADLINE/lib --with-readline-includes=$EBROOTLIBREADLINE/include '
+configopts += '--with-sqlite '
+configopts += '--with-tiff-libs=$EBROOTLIBTIFF/lib --with-tiff-includes=$EBROOTLIBTIFF/include '
+configopts += '--with-x '
+configopts += '--with-zlib-libs=$EBROOTZLIB/lib --with-zlib-includes=$EBROOTZLIB/include '
+configopts += '--with-bzlib --with-bzlib-libs=$EBROOTBZIP2/lib --with-bzlib-includes=$EBROOTBZIP2/include '
+configopts += '--with-zstd --with-zstd-libs=$EBROOTZSTD/lib --with-zstd-includes=$EBROOTZSTD/include '
+configopts += '--with-gdal=$EBROOTGDAL/bin/gdal-config '
+configopts += '--with-libpng=$EBROOTLIBPNG/bin '
+configopts += '--with-pdal '
+
+postinstallcmds = [
+    'ln -s grass%(version_major)s%(version_minor)s %(installdir)s/grass%(version_major)s',
+]
+
+sanity_check_paths = {
+    'files': ['bin/grass'],
+    'dirs': ['grass%(version_major)s%(version_minor)s']
+}
+
+moduleclass = 'geo'
+

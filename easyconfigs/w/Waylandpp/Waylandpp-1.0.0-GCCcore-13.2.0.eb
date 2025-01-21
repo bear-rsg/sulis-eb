@@ -1,0 +1,56 @@
+# uob 
+easyblock = 'CMakeMake'
+
+name = 'Waylandpp'
+version = '1.0.0'
+
+homepage = 'https://github.com/NilsBrause/waylandpp'
+description = """Wayland is an object oriented display protocol, which
+features request and events. Requests can be seen as method calls on
+certain objects, whereas events can be seen as signals of an object.
+This makes the Wayland protocol a perfect candidate for a C++ binding.
+
+The goal of this library is to create such a C++ binding for Wayland
+using the most modern C++ technology currently available, providing
+an easy to use C++ API to Wayland."""
+
+toolchain = {'name': 'GCCcore', 'version': '13.2.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/NilsBrause/waylandpp/archive']
+sources = ['%(version)s.tar.gz']
+
+patches = [
+  # specify patch file and optionally level and opts for patch command
+  {'name': '%(name)s-%(version)s-GCCcore-13.2.0.patch', 'level': 0}
+]
+
+checksums = [
+    {'1.0.0.tar.gz': '2b0892152599210e9797a0651a119f65'},
+]
+
+builddependencies = [
+    ('CMake', '3.27.6'),
+    ('binutils', '2.40'),
+    ('pkgconf', '2.0.3'),
+]
+
+dependencies = [
+    ('pugixml', '1.12.1'),
+    ('Wayland', '1.22.0'),
+    ('freeglut', '3.4.0'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/wayland-scanner++', 'lib//libwayland-client-extra++.%s' % SHLIB_EXT,
+              'lib/libwayland-client++.%s' % SHLIB_EXT,
+              'lib/libwayland-client-unstable++.%s' % SHLIB_EXT,
+              'lib/libwayland-cursor++.%s' % SHLIB_EXT,
+              'lib/libwayland-egl++.%s' % SHLIB_EXT,
+              'lib/libwayland-server-extra++.%s' % SHLIB_EXT,
+              'lib/libwayland-server++.%s' % SHLIB_EXT,
+              'lib/libwayland-server-unstable++.%s' % SHLIB_EXT],
+    'dirs': ['include', 'share'],
+}
+
+moduleclass = 'lib'

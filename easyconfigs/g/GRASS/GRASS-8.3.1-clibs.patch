@@ -1,0 +1,13 @@
+Use libs threads and math in the LDFLAGS
+diff -ruN /gpfs/home/s/sh824/grass1/grass-origin/configure /gpfs/home/s/sh824/grass1/grass-new/configure
+--- configure	2024-08-02 09:35:20.219501000 +0100
++++ configure	2024-08-02 09:55:51.934621000 +0100
+@@ -4307,7 +4307,7 @@
+        SHLIB_SUFFIX=".so"
+        SHLIB_LD="${CC} -shared"
+             SHLIB_LDX="${CXX} -shared"
+-            LDFLAGS="-Wl,--export-dynamic"
++            LDFLAGS="-pthread -lm -Wl,--export-dynamic"
+             LD_SEARCH_FLAGS='-Wl,-rpath-link,${LIB_RUNTIME_DIR} -Wl,-rpath,${INST_DIR}/lib'
+             LD_LIBRARY_PATH_VAR="LD_LIBRARY_PATH"
+             ;;
