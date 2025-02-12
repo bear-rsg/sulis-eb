@@ -1,6 +1,6 @@
 name = 'Amber'
-local_amber_ver = 22
-local_ambertools_ver = 22
+local_amber_ver = 23
+local_ambertools_ver = 23
 # Patch levels from https://ambermd.org/AmberPatches.php and https://ambermd.org/ATPatches.php
 patchlevels = (5, 4)  # (AmberTools, Amber)
 version = '%s.%s' % (local_amber_ver, patchlevels[1])
@@ -80,15 +80,15 @@ dependencies = [
     ('Perl', '5.38.0'),
     ('Boost', '1.83.0'),
     ('libreadline', '8.2'),
-    ('matplotlib', '3.5.2'),
-    ('netCDF', '4.9.0'),
-    ('netCDF-Fortran', '4.6.0'),
+    ('matplotlib', '3.8.2'),
+    ('netCDF', '4.9.0', '', ('gompi', '2023b')),
+    ('netCDF-Fortran', '4.6.0','', ('gompi', '2023b')),
     ('PnetCDF', '1.12.3'),
-    ('Tkinter', '3.10.4'),
+    ('Tkinter', '3.11.5'),
     ('X11', '20231019'),
-    ('CUDA', '11.7.0', '', SYSTEM),
-    ('NCCL', '2.12.12', '-CUDA-%(cudaver)s'),
-    ('UCX-CUDA', '1.12.1', '-CUDA-%(cudaver)s'),
+    ('CUDA', '12.6.0', '', SYSTEM),
+    ('NCCL', '2.22.3', '', ('CUDA','%(cudaver)s'),
+    ('UCX-CUDA', '1.16.0', '', ('CUDA','%(cudaver)s')
 ]
 
 # Some CUDA tests differs from expected results
